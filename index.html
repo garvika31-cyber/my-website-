@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>VitalMetrics · Smart Health Report</title>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: #f4f7fb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .app-container {
+      max-width: 500px;
+      width: 100%;
+      background: white;
+      border-radius: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      padding: 24px 20px 30px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      transition: all 0.2s ease;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #0b3b5c, #1b6b8f);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .subhead {
+      color: #5e6f8c;
+      font-size: 15px;
+      font-weight: 400;
+      margin-bottom: 24px;
+      border-left: 4px solid #2a9d8f;
+      padding-left: 14px;
+    }
+
+    /* Form styles */
+    .form-card {
+      background: #f9fcff;
+      border-radius: 24px;
+      padding: 20px 18px;
+      margin-bottom: 24px;
+      border: 1px solid #e2edf7;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .input-group {
+      flex: 1 1 calc(50% - 6px);
+      min-width: 120px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e3b5c;
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+    }
+
+    .input-group input, .input-group select {
+      width: 100%;
+      padding: 14px 12px;
+      border: 1.5px solid #dbe4ed;
+      border-radius: 18px;
+      font-size: 15px;
+      background: white;
+      transition: border 0.2s;
+      outline: none;
+    }
+
+    .input-group input:focus, .input-group select:focus {
+      border-color: #2a9d8f;
+    }
+
+    /* Health focus chips */
+    .chip-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e3b5c;
+      margin: 16px 0 10px;
+    }
+
+    .chip-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .chip {
+      background: white;
+      border: 1.5px solid #cbdae6;
+      border-radius: 40px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1e3b5c;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .chip i {
+      margin-right: 6px;
+      font-size: 13px;
+      color: #2a9d8f;
+    }
+
+    .chip.active {
+      background: #1b6b8f;
+      border-color: #1b6b8f;
+      color: white;
+    }
+    .chip.active i {
+      color: white;
+    }
+
+    /* Generate button */
+    .btn-primary {
+      background: #0b3b5c;
+      color: white;
+      border: none;
+      border-radius: 60px;
+      padding: 18px 20px;
+      font-size: 18px;
+      font-weight: 700;
+      width: 100%;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 8px 18px rgba(11, 59, 92, 0.15);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .btn-primary:hover {
+      background: #1a5276;
+      transform: scale(1.01);
+    }
+
+    /* REPORT SECTION */
+    .report-section {
+      margin-top: 10px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: 0.3s;
+    }
+
+    .report-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .metric-grid {
+      display: flex;
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .metric-card {
+      background: #f0f6fe;
+      border-radius: 22px;
+      padding: 16px 10px;
+      flex: 1;
+      text-align: center;
+      border: 1px solid #d9e9fa;
+    }
+
+    .metric-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0b3b5c;
+      line-height: 1.2;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: #5e7e9c;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    .macro-bars {
+      background: white;
+      border-radius: 20px;
+      padding: 18px;
+      margin: 16px 0;
+      border: 1px solid #e2edf7;
+    }
+
+    .macro-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .macro-name {
+      width: 70px;
+      font-weight: 600;
+      color: #1e3b5c;
+    }
+    .macro-bar-bg {
+      flex: 1;
+      height: 10px;
+      background: #e0eaf3;
+      border-radius: 20px;
+      margin: 0 12px;
+      overflow: hidden;
+    }
+    .macro-bar-fill {
+      height: 10px;
+      border-radius: 20px;
+      width: 0%;
+    }
+    .protein-fill { background: #e76f51; }
+    .carbs-fill { background: #f4a261; }
+    .fats-fill { background: #2a9d8f; }
+    .macro-grams {
+      min-width: 60px;
+      text-align: right;
+      font-weight: 600;
+    }
+
+    /* PREMIUM BLUR CARD */
+    .premium-tease {
+      margin-top: 24px;
+      position: relative;
+      border-radius: 24px;
+      background: #ffffffdd;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid #cfdfee;
+      padding: 18px 16px;
+      box-shadow: 0 10px 25px -8px rgba(0,20,40,0.2);
+    }
+
+    .blur-content {
+      filter: blur(5px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .premium-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .premium-header i {
+      color: #e9c46a;
+      font-size: 22px;
+    }
+    .premium-header h3 {
+      font-size: 18px;
+      color: #1e3b5c;
+    }
+
+    .blur-line {
+      height: 12px;
+      background: #b0c7db;
+      border-radius: 40px;
+      margin: 12px 0;
+      width: 80%;
+    }
+    .blur-line.short { width: 55%; }
+    .blur-line.medium { width: 70%; }
+
+    .paywall-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.45);
+      backdrop-filter: blur(1px);
+      border-radius: 24px;
+      padding: 16px;
+    }
+
+    .lock-icon {
+      background: white;
+      width: 56px;
+      height: 56px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+      margin-bottom: 12px;
+    }
+    .lock-icon i {
+      font-size: 32px;
+      color: #1b6b8f;
+    }
+
+    .unlock-btn {
+      background: #0b3b5c;
+      color: white;
+      border: none;
+      border-radius: 60px;
+      padding: 16px 24px;
+      font-weight: 700;
+      font-size: 18px;
+      width: 100%;
+      max-width: 260px;
+      margin-top: 8px;
+      cursor: pointer;
+      box-shadow: 0 8px 14px rgba(11,59,92,0.3);
+      border: 1px solid #ffffff50;
+      transition: 0.2s;
+    }
+
+    .unlock-btn i {
+      margin-right: 8px;
+    }
+
+    .legal-note {
+      font-size: 11px;
+      color: #6a7e9c;
+      margin-top: 20px;
+      text-align: center;
+      background: #f0f6fe;
+      padding: 12px;
+      border-radius: 30px;
+    }
+
+    .detailed-content {
+      margin-top: 18px;
+      padding: 16px 0;
+      border-top: 2px dashed #bdd3e6;
+    }
+
+    .hidden { display: none; }
+
+    .success-badge {
+      background: #e9f6ef;
+      color: #1e7e5c;
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-weight: 500;
+    }
+
+    .disclaimer-small {
+      font-size: 11px;
+      color: #777;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <h1><i class="fas fa-leaf" style="color: #2a9d8f;"></i> VitalMetrics</h1>
+  <div class="subhead">Science-backed · Freemium health insight</div>
+
+  <!-- Input form -->
+  <div class="form-card">
+    <div class="input-row">
+      <div class="input-group">
+        <label><i class="fas fa-venus-mars"></i> Gender</label>
+        <select id="genderSelect">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label><i class="fas fa-calendar"></i> Age</label>
+        <input type="number" id="ageInput" placeholder="Years" value="34" min="15" max="100">
+      </div>
+    </div>
+    <div class="input-row">
+      <div class="input-group">
+        <label><i class="fas fa-ruler-vertical"></i> Height (cm)</label>
+        <input type="number" id="heightInput" placeholder="cm" value="175" min="100" max="250">
+      </div>
+      <div class="input-group">
+        <label><i class="fas fa-weight-scale"></i> Weight (kg)</label>
+        <input type="number" id="weightInput" placeholder="kg" value="82" min="30" max="200">
+      </div>
+    </div>
+    <div class="input-group" style="margin-bottom: 8px;">
+      <label><i class="fas fa-walking"></i> Activity Level</label>
+      <select id="activitySelect">
+        <option value="1.2">Sedentary (little/no exercise)</option>
+        <option value="1.375" selected>Lightly active (1-3 days/week)</option>
+        <option value="1.55">Moderately active (3-5 days/week)</option>
+        <option value="1.725">Very active (6-7 days/week)</option>
+        <option value="1.9">Athlete (2x/day, intense)</option>
+      </select>
+    </div>
+
+    <div class="chip-label"><i class="fas fa-heart-pulse"></i> Health Focus Areas (select all that apply)</div>
+    <div class="chip-container" id="focusChips">
+      <div class="chip" data-focus="sugar"><i class="fas fa-droplet"></i> Sugar Mgmt</div>
+      <div class="chip" data-focus="heart"><i class="fas fa-heart"></i> Heart Health</div>
+      <div class="chip" data-focus="joint"><i class="fas fa-bone"></i> Joint Comfort</div>
+      <div class="chip" data-focus="digest"><i class="fas fa-apple-alt"></i> Digestive</div>
+      <div class="chip" data-focus="weight"><i class="fas fa-arrow-trend-down"></i> Weight Loss</div>
+    </div>
+  </div>
+
+  <button class="btn-primary" id="generateBtn"><i class="fas fa-file-waveform"></i> Generate Free Report</button>
+
+  <!-- REPORT SECTION (hidden by default) -->
+  <div class="report-section" id="reportSection">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+      <i class="fas fa-clipboard-check" style="color:#2a9d8f;"></i>
+      <span style="font-weight: 700; color:#0b3b5c;">Your Standard Report</span>
+    </div>
+    
+    <!-- Metrics -->
+    <div class="metric-grid">
+      <div class="metric-card"><span class="metric-value" id="bmrDisplay">--</span><div class="metric-label">BMR (kcal)</div></div>
+      <div class="metric-card"><span class="metric-value" id="tdeeDisplay">--</span><div class="metric-label">TDEE</div></div>
+      <div class="metric-card"><span class="metric-value" id="bmiDisplay">--</span><div class="metric-label">BMI</div></div>
+    </div>
+    <div id="bmiCategory" style="font-size:14px; margin-bottom:8px; font-weight:500;"></div>
+
+    <!-- Macros -->
+    <div class="macro-bars">
+      <div style="font-weight:600; margin-bottom:14px;"><i class="fas fa-utensils"></i> Macro Targets (Free)</div>
+      <div class="macro-item"><span class="macro-name">Protein</span><div class="macro-bar-bg"><div class="macro-bar-fill protein-fill" id="proteinBar" style="width:30%"></div></div><span class="macro-grams" id="proteinGrams">--g</span></div>
+      <div class="macro-item"><span class="macro-name">Carbs</span><div class="macro-bar-bg"><div class="macro-bar-fill carbs-fill" id="carbsBar" style="width:45%"></div></div><span class="macro-grams" id="carbsGrams">--g</span></div>
+      <div class="macro-item"><span class="macro-name">Fats</span><div class="macro-bar-bg"><div class="macro-bar-fill fats-fill" id="fatsBar" style="width:25%"></div></div><span class="macro-grams" id="fatsGrams">--g</span></div>
+    </div>
+
+    <!-- Health focus summary -->
+    <div id="focusSummary" style="margin:6px 0 16px; font-style:italic; color:#2c5778;"></div>
+
+    <!-- PREMIUM BLUR CARD (Always shown with report) -->
+    <div class="premium-tease" id="premiumTease">
+      <div class="blur-content">
+        <div class="premium-header">
+          <i class="fas fa-crown"></i>
+          <h3>Your 7‑Day Protocol Preview</h3>
+        </div>
+        <div class="blur-line"></div>
+        <div class="blur-line medium"></div>
+        <div class="blur-line short"></div>
+        <div style="margin-top:16px;"><i class="fas fa-flask"></i> Scientifically‑backed adjunctive strategies</div>
+        <div class="blur-line" style="width:60%"></div>
+      </div>
+      <!-- Paywall overlay -->
+      <div class="paywall-overlay">
+        <div class="lock-icon"><i class="fas fa-lock"></i></div>
+        <div style="font-weight:700; font-size:18px; color:#0b2a40;">Unlock Full Report</div>
+        <div style="margin:6px 0; color:#1e5270;">One-time · $4.99</div>
+        <button class="unlock-btn" id="unlockBtn"><i class="fas fa-credit-card"></i> Unlock Now</button>
+        <div style="font-size:11px; margin-top:10px; opacity:0.8;">Personalized protocol · Evidence-based</div>
+      </div>
+    </div>
+
+    <!-- Detailed report container (hidden until "purchase") -->
+    <div id="detailedReportContainer" class="detailed-content hidden">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+        <i class="fas fa-check-circle" style="color:#2a9d8f; font-size:28px;"></i>
+        <span class="success-badge"><i class="fas fa-star"></i> PREMIUM UNLOCKED</span>
+      </div>
+      <h3 style="color:#0b3b5c; margin-bottom:12px;">🧬 Personalized Science Protocol</h3>
+      <div id="dynamicRemedyText" style="background:#f6fbfe; padding:18px; border-radius:20px;">
+        <!-- filled via JS based on focus areas -->
+      </div>
+      <div class="disclaimer-small">
+        <i class="fas fa-info-circle"></i> Nutritional education based on peer-reviewed research. Not medical advice.
+      </div>
+    </div>
+  </div>
+
+  <div class="legal-note">
+    <i class="fas fa-shield"></i> Data stays on device · BMI/TDEE are estimates. Always consult a physician.
+  </div>
+</div>
+
+<script>
+  (function(){
+    // ----- DOM elements
+    const genderSelect = document.getElementById('genderSelect');
+    const ageInput = document.getElementById('ageInput');
+    const heightInput = document.getElementById('heightInput');
+    const weightInput = document.getElementById('weightInput');
+    const activitySelect = document.getElementById('activitySelect');
+    const chips = document.querySelectorAll('.chip');
+    const generateBtn = document.getElementById('generateBtn');
+    const reportSection = document.getElementById('reportSection');
+    
+    // displays
+    const bmrDisplay = document.getElementById('bmrDisplay');
+    const tdeeDisplay = document.getElementById('tdeeDisplay');
+    const bmiDisplay = document.getElementById('bmiDisplay');
+    const bmiCategorySpan = document.getElementById('bmiCategory');
+    const proteinGrams = document.getElementById('proteinGrams');
+    const carbsGrams = document.getElementById('carbsGrams');
+    const fatsGrams = document.getElementById('fatsGrams');
+    const proteinBar = document.getElementById('proteinBar');
+    const carbsBar = document.getElementById('carbsBar');
+    const fatsBar = document.getElementById('fatsBar');
+    const focusSummary = document.getElementById('focusSummary');
+    const premiumTease = document.getElementById('premiumTease');
+    const detailedContainer = document.getElementById('detailedReportContainer');
+    const dynamicRemedy = document.getElementById('dynamicRemedyText');
+    const unlockBtn = document.getElementById('unlockBtn');
+
+    // ----- Chip toggle logic
+    chips.forEach(chip => {
+      chip.addEventListener('click', function(e) {
+        this.classList.toggle('active');
+      });
+    });
+
+    function getActiveFocusAreas() {
+      const active = [];
+      document.querySelectorAll('.chip.active').forEach(c => {
+        active.push(c.getAttribute('data-focus'));
+      });
+      return active;
+    }
+
+    // ----- Calculation helpers
+    function calculateBMR(gender, weight, height, age) {
+      if (gender === 'male') {
+        return (10 * weight) + (6.25 * height) - (5 * age) + 5;
+      } else {
+        return (10 * weight) + (6.25 * height) - (5 * age) - 161;
+      }
+    }
+
+    function calculateBMI(weight, heightCm) {
+      const heightM = heightCm / 100;
+      return weight / (heightM * heightM);
+    }
+
+    function getBMICategory(bmi) {
+      if (bmi < 18.5) return 'Underweight';
+      if (bmi < 25) return 'Normal weight';
+      if (bmi < 30) return 'Overweight';
+      return 'Obese';
+    }
+
+    // Macro distribution based on focus & activity (simplified)
+    function computeMacros(tdee, focusAreas, activityLevel) {
+      let proteinPct = 0.30, carbsPct = 0.40, fatsPct = 0.30; // default
+
+      // Adjust based on focus areas
+      if (focusAreas.includes('weight')) { proteinPct = 0.35; carbsPct = 0.35; fatsPct = 0.30; }
+      if (focusAreas.includes('sugar')) { carbsPct = 0.35; proteinPct = 0.30; fatsPct = 0.35; }
+      if (focusAreas.includes('heart')) { fatsPct = 0.25; carbsPct = 0.45; proteinPct = 0.30; }
+      if (focusAreas.includes('joint')) { proteinPct = 0.35; fatsPct = 0.30; carbsPct = 0.35; }
+      if (focusAreas.includes('digest')) { carbsPct = 0.50; proteinPct = 0.25; fatsPct = 0.25; }
+      
+      // Athletic / higher activity boosts carbs a bit
+      if (parseFloat(activityLevel) >= 1.55) {
+        carbsPct = Math.min(0.55, carbsPct + 0.05);
+        proteinPct = Math.max(0.25, proteinPct - 0.02);
+        fatsPct = 1 - carbsPct - proteinPct;
+      }
+      
+      // Normalize to sum 1
+      const sum = proteinPct + carbsPct + fatsPct;
+      proteinPct /= sum; carbsPct /= sum; fatsPct /= sum;
+
+      const proteinKcal = tdee * proteinPct;
+      const carbsKcal = tdee * carbsPct;
+      const fatsKcal = tdee * fatsPct;
+
+      return {
+        protein: Math.round(proteinKcal / 4),
+        carbs: Math.round(carbsKcal / 4),
+        fats: Math.round(fatsKcal / 9),
+        pct: { protein: proteinPct, carbs: carbsPct, fats: fatsPct }
+      };
+    }
+
+    // ----- Render free report
+    function renderReport() {
+      const gender = genderSelect.value;
+      const age = parseFloat(ageInput.value) || 30;
+      const height = parseFloat(heightInput.value) || 170;
+      const weight = parseFloat(weightInput.value) || 70;
+      const activityFactor = parseFloat(activitySelect.value) || 1.375;
+      
+      const bmr = calculateBMR(gender, weight, height, age);
+      const tdee = Math.round(bmr * activityFactor);
+      const bmi = calculateBMI(weight, height);
+      const bmiCat = getBMICategory(bmi);
+      
+      bmrDisplay.textContent = Math.round(bmr);
+      tdeeDisplay.textContent = tdee;
+      bmiDisplay.textContent = bmi.toFixed(1);
+      bmiCategorySpan.innerHTML = `<i class="fas fa-chart-simple"></i> BMI Category: <strong>${bmiCat}</strong> (Ideal: 18.5–24.9)`;
+
+      const activeFocus = getActiveFocusAreas();
+      let focusText = '';
+      if (activeFocus.length === 0) focusText = 'No specific health focus selected. General recommendations shown.';
+      else {
+        const niceNames = { sugar:'Sugar Mgmt', heart:'Heart Health', joint:'Joint Comfort', digest:'Digestive', weight:'Weight Loss' };
+        focusText = `🎯 Focus: ${activeFocus.map(f => niceNames[f] || f).join(' · ')}`;
+      }
+      focusSummary.textContent = focusText;
+
+      const macros = computeMacros(tdee, activeFocus, activityFactor);
+      proteinGrams.textContent = macros.protein + 'g';
+      carbsGrams.textContent = macros.carbs + 'g';
+      fatsGrams.textContent = macros.fats + 'g';
+      
+      // set bar widths relative to each other (max bar = 100%)
+      const maxGrams = Math.max(macros.protein, macros.carbs, macros.fats, 1);
+      proteinBar.style.width = (macros.protein / maxGrams * 100) + '%';
+      carbsBar.style.width = (macros.carbs / maxGrams * 100) + '%';
+      fatsBar.style.width = (macros.fats / maxGrams * 100) + '%';
+
+      // Show report section
+      reportSection.classList.add('visible');
+      
+      // Hide detailed part if previously unlocked (reset)
+      detailedContainer.classList.add('hidden');
+      // Make sure premium teaser is visible
+      premiumTease.style.display = 'block';
+    }
+
+    // ----- Generate button
+    generateBtn.addEventListener('click', function() {
+      renderReport();
+      // scroll a bit
+      reportSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    // ----- Unlock / Paywall simulation (detailed report)
+    unlockBtn.addEventListener('click', function() {
+      // Simulate purchase alert
+      alert('🔓 Demo: Payment simulation. Detailed report unlocked! (In real app: RevenueCat/Stripe integration)');
+      
+      // Generate detailed "remedy" content based on focus areas
+      const activeFocus = getActiveFocusAreas();
+      const gender = genderSelect.value;
+      const age = ageInput.value;
+      const weight = weightInput.value;
+      
+      let remedyHtml = '';
+      
+      if (activeFocus.includes('sugar')) {
+        remedyHtml += `<p><i class="fas fa-check-circle" style="color:#2a9d8f;"></i> <strong>Glycemic strategy:</strong> 10-min walk after meals reduces glucose spike by ~22% (Diabetologia, 2022). Focus on soluble fiber (oats, legumes).</p>`;
+      }
+      if (activeFocus.includes('heart')) {
+        remedyHtml += `<p><i class="fas fa-heart" style="color:#e76f51;"></i> <strong>Cardio-protocol:</strong> Increase Omega‑3 (salmon, walnuts). 150min moderate activity/week. Limit sodium <2300mg.</p>`;
+      }
+      if (activeFocus.includes('joint')) {
+        remedyHtml += `<p><i class="fas fa-bone"></i> <strong>Joint support:</strong> Vitamin D + Calcium synergy. Collagen peptides with vitamin C may support cartilage (study: 10g/day).</p>`;
+      }
+      if (activeFocus.includes('digest')) {
+        remedyHtml += `<p><i class="fas fa-apple-alt"></i> <strong>Gut health:</strong> 30g fiber/day, fermented foods (yogurt, kimchi). Hydration & mindful eating.</p>`;
+      }
+      if (activeFocus.includes('weight')) {
+        remedyHtml += `<p><i class="fas fa-fire"></i> <strong>Metabolic edge:</strong> Protein at 1.6g/kg body weight preserves lean mass. NEAT (steps) accounts for 15-30% calorie burn.</p>`;
+      }
+      
+      // Default if none
+      if (remedyHtml === '') {
+        remedyHtml = `<p><i class="fas fa-flask"></i> <strong>General vitality protocol:</strong> Balanced Mediterranean-style eating, 7-9h sleep, hydration. Based on cohort studies.</p>`;
+      }
+      
+      // Add personalized note
+      remedyHtml += `<p style="margin-top:12px;"><i class="fas fa-calculator"></i> Based on your profile (${gender}, ${age} yrs, ${weight}kg) we recommend a daily check-in for 21 days.</p>`;
+      
+      dynamicRemedy.innerHTML = remedyHtml;
+      
+      // Hide blur overlay? Keep the premium card but show detailed below
+      detailedContainer.classList.remove('hidden');
+      // Optional: you could hide the paywall overlay but we keep it (it's a demo, we keep both)
+      // We'll just scroll to detailed.
+      detailedContainer.scrollIntoView({behavior:'smooth', block:'nearest'});
+    });
+
+    // ----- Pre-fill a demo report on page load? we can call once to showcase
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set some default chips active for demonstration
+      document.querySelector('[data-focus="sugar"]').classList.add('active');
+      document.querySelector('[data-focus="heart"]').classList.add('active');
+      // Generate report automatically so user sees it immediately
+      setTimeout(() => {
+        renderReport();
+      }, 100);
+    });
+
+    // Re-run if any input changes? we keep manual via button for clarity.
+  })();
+</script>
+</body>
+</html>
