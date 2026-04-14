@@ -6,7 +6,6 @@
 
 <title>VitalMetrics Pro</title>
 
-<!-- Google Font -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -38,6 +37,16 @@ font-size:20px;
 font-weight:600;
 text-align:center;
 color:#1e1b4b;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:8px;
+}
+
+/* FLOWER ICON */
+.flower{
+font-size:20px;
+color:#f97316;
 }
 
 /* SUBTEXT */
@@ -119,7 +128,11 @@ margin-top:15px;
 
 <div class="app">
 
-<div class="brand">🌿 VitalMetrics Pro</div>
+<div class="brand">
+<span class="flower">✿</span>
+<span>VitalMetrics Pro</span>
+</div>
+
 <div class="subtitle">Smart health insights based on real formulas</div>
 
 <input id="age" type="number" placeholder="🎂 Age">
@@ -243,7 +256,6 @@ document.getElementById("insight").innerHTML = "⚡ Improve sleep, maintain calo
 document.getElementById("result").style.display="block";
 }
 
-// WhatsApp
 function unlock(){
 window.open("https://wa.me/91XXXXXXXXXX?text=Hi, I checked my health score and want my personalized plan");
 }
