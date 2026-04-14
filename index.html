@@ -34,9 +34,26 @@ box-shadow:0 12px 40px rgba(0,0,0,0.7);
 border:1px solid rgba(255,255,255,0.08);
 }
 
-h2{
-margin-bottom:6px;
-font-size:24px;
+/* 🔥 BRAND HEADER */
+.brand{
+display:flex;
+align-items:center;
+gap:10px;
+padding:12px 16px;
+border-radius:14px;
+margin-bottom:10px;
+background:linear-gradient(90deg,#a855f7,#f97316);
+box-shadow:0 0 20px rgba(168,85,247,0.6);
+font-size:20px;
+font-weight:600;
+}
+
+.logo{
+font-size:22px;
+}
+
+.name b{
+font-weight:800;
 }
 
 .subtitle{
@@ -65,7 +82,6 @@ border-radius:32px;
 font-weight:bold;
 font-size:16px;
 cursor:pointer;
-transition:0.3s;
 }
 
 .main-btn{
@@ -153,7 +169,6 @@ margin-top:18px;
 color:#cbd5f5;
 }
 
-/* validation text */
 .error{
 color:#f87171;
 font-size:14px;
@@ -167,7 +182,11 @@ display:none;
 
 <div class="app">
 
-<h2>🌿 VitalMetrics Pro</h2>
+<div class="brand">
+<span class="logo">🌿</span>
+<span class="name">VitalMetrics <b>Pro</b></span>
+</div>
+
 <p class="subtitle">AI-powered health insights</p>
 
 <input id="age" type="number" placeholder="🎂 Age">
@@ -238,7 +257,6 @@ let heightVal = document.getElementById("height").value;
 let weightVal = document.getElementById("weight").value;
 let sleepVal = document.getElementById("sleep").value;
 
-// validation
 if(!ageVal || !heightVal || !weightVal || !sleepVal){
 document.getElementById("errorMsg").style.display="block";
 return;
@@ -246,7 +264,6 @@ return;
 document.getElementById("errorMsg").style.display="none";
 }
 
-// show loader
 document.getElementById("loader").style.display="block";
 document.getElementById("result").style.display="none";
 
@@ -301,7 +318,7 @@ document.getElementById("ctaBox").style.display="block";
 
 function unlock(){
 let msg="Hi, I want my personalized health report from VitalMetrics Pro.";
-let phone="918285583429"; // replace
+let phone="918285583429"; // replace with your number
 window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg));
 }
 </script>
