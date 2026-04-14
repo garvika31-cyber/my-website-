@@ -62,10 +62,6 @@ color:#022c22;
 box-shadow:0 0 15px #22c55e;
 }
 
-.main-btn:hover{
-transform:scale(1.03);
-}
-
 .cta-btn{
 background:linear-gradient(90deg,#38bdf8,#22d3ee);
 color:#022c22;
@@ -73,6 +69,7 @@ box-shadow:0 0 15px #38bdf8;
 }
 
 .result{display:none;margin-top:15px;}
+
 .card{
 background:rgba(255,255,255,0.08);
 padding:15px;
@@ -86,7 +83,6 @@ from{opacity:0;transform:translateY(10px);}
 to{opacity:1;transform:translateY(0);}
 }
 
-/* Loader */
 .loader{
 display:none;
 text-align:center;
@@ -108,7 +104,6 @@ background:linear-gradient(90deg,#22c55e,#4ade80);
 transition:width 1s;
 }
 
-/* Score bar */
 .score-bar{
 height:10px;
 background:#1e293b;
@@ -125,9 +120,19 @@ transition:width 1s;
 }
 
 .cta{display:none;margin-top:20px;}
-.trust{font-size:13px;opacity:0.75;margin-top:10px;}
 
-.footer{text-align:center;font-size:12px;opacity:0.5;margin-top:15px;}
+.trust{
+font-size:13px;
+opacity:0.75;
+margin-top:10px;
+}
+
+.footer{
+text-align:center;
+font-size:12px;
+opacity:0.5;
+margin-top:15px;
+}
 </style>
 </head>
 
@@ -202,66 +207,83 @@ function analyze(){
 document.getElementById("loader").style.display="block";
 document.getElementById("result").style.display="none";
 
+// loader animation
+document.getElementById("fill").style.width="0%";
+setTimeout(()=>{ document.getElementById("fill").style.width="100%"; },100);
+
 setTimeout(()=>{
 
-let age=+age.value||25;
-let h=+height.value||170;
-let w=+weight.value||70;
-let act=+activity.value;
-let goal=goalSelect.value;
-let sleep=+sleepInput.value||7;
-let gender=genderSelect.value;
+let age = +document.getElementById("age").value || 25;
+let h = +document.getElementById("height").value || 170;
+let w = +document.getElementById("weight").value || 70;
+let act = +document.getElementById("activity").value;
+let goal = document.getElementById("goal").value;
+let sleep = +document.getElementById("sleep").value || 7;
+let gender = document.getElementById("gender").value;
 
-// fix selectors
-age=+document.getElementById("age").value||25;
-h=+document.getElementById("height").value||170;
-w=+document.getElementById("weight").value||70;
-act=+document.getElementById("activity").value;
-goal=document.getElementById("goal").value;
-sleep=+document.getElementById("sleep").value||7;
-gender=document.getElementById("gender").value;
-
-// calc
+// BMR
 let bmr = gender==="male"
 ? (10*w)+(6.25*h)-(5*age)+5
 : (10*w)+(6.25*h)-(5*age)-161;
 
+// TDEE
 let tdee = Math.round(bmr * act);
 if(goal==="loss") tdee -= 400;
 if(goal==="gain") tdee += 300;
 
+// BMI
 let bmi=(w/((h/100)*(h/100))).toFixed(1);
 
+// Category
 let cat="Normal";
 if(bmi<18.5) cat="Underweight";
 else if(bmi<25) cat="Normal";
 else if(bmi<30) cat="Overweight";
 else cat="Obese";
 
+// Score
 let score = 100 - (bmi*1.5);
 if(sleep<6) score -=5;
 score=Math.max(50,Math.min(95,Math.round(score)));
 
-// render
+// Insights
+let insight="";
+if(cat==="Overweight" || cat==="Obese"){
+insight+="⚠️ Elevated metabolic risk. ";
+}
+if(sleep<6){
+insight+="😴 Low sleep affects recovery. ";
+}
+if(goal==="loss"){
+insight+="🔥 Calorie deficit applied. ";
+}
+if(gender==="female"){
+insight+="⚖️ Hormonal response may vary. ";
+}
+if(insight===""){
+insight="✅ Your metrics look healthy.";
+}
+
+// Render
 document.getElementById("scoreText").innerText=score+"/100";
 document.getElementById("scoreFill").style.width=score+"%";
 
 document.getElementById("bmiBox").innerHTML="📊 BMI: "+bmi+" ("+cat+")";
 document.getElementById("calBox").innerHTML="🍽 Calories: "+tdee+" kcal";
-document.getElementById("insightBox").innerHTML="💡 Personalized insights generated";
+document.getElementById("insightBox").innerHTML="💡 "+insight;
 
+// Show results
 document.getElementById("loader").style.display="none";
 document.getElementById("result").style.display="block";
 document.getElementById("ctaBox").style.display="block";
 
-document.getElementById("fill").style.width="100%";
-
 },1500);
 }
 
+// WhatsApp CTA
 function unlock(){
 let msg="Hi, I want my personalized health report from VitalMetrics Pro.";
-let phone="918851096893";
+let phone="918851096893"; // PUT YOUR NUMBER
 window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg));
 }
 </script>
