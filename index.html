@@ -41,7 +41,7 @@ font-size:24px;
 
 .subtitle{
 font-size:16px;
-opacity:0.8;
+opacity:0.85;
 margin-bottom:18px;
 color:#e2e8f0;
 }
@@ -68,14 +68,12 @@ cursor:pointer;
 transition:0.3s;
 }
 
-/* ORANGE = ACTION */
 .main-btn{
 background:linear-gradient(90deg,#f97316,#fb923c);
 color:black;
 box-shadow:0 0 18px #f97316;
 }
 
-/* PURPLE = PREMIUM CTA */
 .cta-btn{
 background:linear-gradient(90deg,#a855f7,#c084fc);
 color:white;
@@ -154,6 +152,14 @@ opacity:0.6;
 margin-top:18px;
 color:#cbd5f5;
 }
+
+/* validation text */
+.error{
+color:#f87171;
+font-size:14px;
+margin-top:10px;
+display:none;
+}
 </style>
 </head>
 
@@ -188,6 +194,8 @@ color:#cbd5f5;
 <input id="sleep" type="number" placeholder="🌙 Sleep hours">
 
 <button class="main-btn" onclick="analyze()">🚀 Analyze My Health</button>
+
+<div class="error" id="errorMsg">⚠️ Please fill all fields before analyzing.</div>
 
 <div class="loader" id="loader">
 <p>🤖 Analyzing your health...</p>
@@ -225,6 +233,20 @@ color:#cbd5f5;
 <script>
 function analyze(){
 
+let ageVal = document.getElementById("age").value;
+let heightVal = document.getElementById("height").value;
+let weightVal = document.getElementById("weight").value;
+let sleepVal = document.getElementById("sleep").value;
+
+// validation
+if(!ageVal || !heightVal || !weightVal || !sleepVal){
+document.getElementById("errorMsg").style.display="block";
+return;
+}else{
+document.getElementById("errorMsg").style.display="none";
+}
+
+// show loader
 document.getElementById("loader").style.display="block";
 document.getElementById("result").style.display="none";
 
@@ -233,12 +255,12 @@ setTimeout(()=>{ document.getElementById("fill").style.width="100%"; },100);
 
 setTimeout(()=>{
 
-let age = +document.getElementById("age").value || 25;
-let h = +document.getElementById("height").value || 170;
-let w = +document.getElementById("weight").value || 70;
+let age = +ageVal;
+let h = +heightVal;
+let w = +weightVal;
 let act = +document.getElementById("activity").value;
 let goal = document.getElementById("goal").value;
-let sleep = +document.getElementById("sleep").value || 7;
+let sleep = +sleepVal;
 let gender = document.getElementById("gender").value;
 
 let bmr = gender==="male"
@@ -279,7 +301,7 @@ document.getElementById("ctaBox").style.display="block";
 
 function unlock(){
 let msg="Hi, I want my personalized health report from VitalMetrics Pro.";
-let phone="918285583429";
+let phone="918285583429"; // replace
 window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg));
 }
 </script>
