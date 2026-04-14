@@ -8,8 +8,8 @@
 <style>
 body{
 margin:0;
-font-family:system-ui;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+font-family:system-ui,-apple-system;
+background:linear-gradient(135deg,#0f172a,#1e293b,#020617);
 color:white;
 display:flex;
 justify-content:center;
@@ -17,21 +17,39 @@ padding:20px;
 }
 
 .app{
-max-width:420px;width:100%;
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(20px);
+max-width:420px;
+width:100%;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(25px);
 padding:20px;
-border-radius:20px;
+border-radius:22px;
+box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+h2{
+margin-bottom:5px;
+}
+
+.subtitle{
+font-size:14px;
+opacity:0.7;
+margin-bottom:15px;
+}
+
+label{
+font-size:13px;
+opacity:0.7;
 }
 
 input,select{
 width:100%;
 padding:12px;
-margin:8px 0;
+margin:6px 0 12px 0;
 border:none;
-border-radius:10px;
-background:rgba(255,255,255,0.1);
+border-radius:12px;
+background:rgba(255,255,255,0.08);
 color:white;
+font-size:14px;
 }
 
 button{
@@ -40,9 +58,10 @@ padding:14px;
 margin-top:10px;
 border:none;
 border-radius:30px;
-background:#00c6ff;
-color:black;
+background:linear-gradient(90deg,#22c55e,#4ade80);
+color:#022c22;
 font-weight:bold;
+font-size:15px;
 cursor:pointer;
 }
 
@@ -52,21 +71,34 @@ display:none;
 }
 
 .card{
-background:rgba(255,255,255,0.1);
+background:rgba(255,255,255,0.08);
 padding:15px;
-border-radius:12px;
+border-radius:14px;
 margin-top:10px;
+line-height:1.5;
 }
 
 .cta{
-margin-top:15px;
+margin-top:20px;
 display:none;
+}
+
+.cta button{
+background:linear-gradient(90deg,#38bdf8,#22d3ee);
+color:#022c22;
 }
 
 .trust{
 margin-top:15px;
 font-size:13px;
-opacity:0.85;
+opacity:0.75;
+}
+
+.footer{
+margin-top:15px;
+font-size:12px;
+opacity:0.5;
+text-align:center;
 }
 </style>
 </head>
@@ -76,32 +108,41 @@ opacity:0.85;
 <div class="app">
 
 <h2>🌿 VitalMetrics Pro</h2>
-<p>Smart health insights in seconds</p>
+<p class="subtitle">AI-powered health insights in seconds</p>
 
+<label>👤 Gender</label>
 <select id="gender">
 <option value="male">Male</option>
 <option value="female">Female</option>
 </select>
 
-<input id="age" type="number" placeholder="Age">
-<input id="height" type="number" placeholder="Height (cm)">
-<input id="weight" type="number" placeholder="Weight (kg)">
+<label>🎂 Age</label>
+<input id="age" type="number" placeholder="Enter your age">
 
+<label>📏 Height (cm)</label>
+<input id="height" type="number" placeholder="e.g. 170">
+
+<label>⚖️ Weight (kg)</label>
+<input id="weight" type="number" placeholder="e.g. 70">
+
+<label>🏃 Activity Level</label>
 <select id="activity">
 <option value="1.2">Low activity</option>
 <option value="1.375">Light</option>
 <option value="1.55">Moderate</option>
 </select>
 
+<label>🎯 Goal</label>
 <select id="goal">
 <option value="loss">Fat Loss</option>
 <option value="maintain">Maintain</option>
 <option value="gain">Muscle Gain</option>
 </select>
 
-<input id="sleep" type="number" placeholder="Sleep hours (e.g. 7)">
+<label>🌙 Sleep (hours)</label>
+<input id="sleep" type="number" placeholder="e.g. 7">
 
-<button onclick="analyze()">Analyze My Health</button>
+<button onclick="analyze()">🚀 Analyze My Health</button>
 
 <div class="result" id="result">
 
@@ -111,17 +152,19 @@ opacity:0.85;
 <div class="card" id="insightBox"></div>
 
 <div class="cta" id="ctaBox">
-<button onclick="unlock()">🔓 Get My Personalized Plan</button>
+<button onclick="unlock()">🔓 Unlock My Personalized Plan</button>
 
 <div class="trust">
-✔ Custom fat loss / muscle plan<br>
-✔ Calories + macros included<br>
-✔ Delivered within 24 hours<br>
-✔ Early users getting results
+✔ Custom fat loss / muscle strategy<br>
+✔ Exact calories + macros<br>
+✔ 7-day action plan<br>
+✔ Delivered within 24 hours
 </div>
 </div>
 
 </div>
+
+<div class="footer">Built for smarter health decisions ⚡</div>
 
 </div>
 
@@ -144,7 +187,7 @@ let bmr = gender==="male"
 // TDEE
 let tdee = Math.round(bmr * act);
 
-// Goal adjustment
+// Goal
 if(goal==="loss") tdee -= 400;
 if(goal==="gain") tdee += 300;
 
@@ -166,26 +209,26 @@ score=Math.max(50,Math.min(95,Math.round(score)));
 // Insights
 let insight="";
 if(cat==="Overweight" || cat==="Obese"){
-insight+="Your BMI suggests elevated metabolic risk. ";
+insight+="⚠️ Elevated metabolic risk. ";
 }
 if(sleep<6){
-insight+="Low sleep may impact recovery and fat metabolism. ";
+insight+="😴 Low sleep affects recovery. ";
 }
 if(goal==="loss"){
-insight+="A calorie deficit is applied to support fat loss. ";
+insight+="🔥 Calorie deficit applied. ";
 }
 if(gender==="female"){
-insight+="Female metabolism may respond differently to calorie restriction. ";
+insight+="⚖️ Hormonal response may vary. ";
 }
 if(insight===""){
-insight="Your metrics fall within a generally healthy range.";
+insight="✅ Your metrics look healthy.";
 }
 
 // Render
-document.getElementById("scoreBox").innerHTML="<b>Health Score:</b> "+score+"/100";
-document.getElementById("bmiBox").innerHTML="<b>BMI:</b> "+bmi+" ("+cat+")";
-document.getElementById("calBox").innerHTML="<b>Daily Calories:</b> "+tdee+" kcal";
-document.getElementById("insightBox").innerHTML="<b>Insights:</b> "+insight;
+document.getElementById("scoreBox").innerHTML="🔥 <b>Health Score:</b> "+score+"/100";
+document.getElementById("bmiBox").innerHTML="📊 <b>BMI:</b> "+bmi+" ("+cat+")";
+document.getElementById("calBox").innerHTML="🍽 <b>Daily Calories:</b> "+tdee+" kcal";
+document.getElementById("insightBox").innerHTML="💡 <b>Insights:</b> "+insight;
 
 document.getElementById("result").style.display="block";
 document.getElementById("ctaBox").style.display="block";
@@ -194,7 +237,7 @@ document.getElementById("ctaBox").style.display="block";
 // WhatsApp CTA
 function unlock(){
 let msg = "Hi, I want my personalized health report from VitalMetrics Pro.";
-let phone = "918851096893"; // 👉 PUT YOUR NUMBER
+let phone = "918851096893"; // PUT YOUR NUMBER
 
 window.open("https://wa.me/" + phone + "?text=" + encodeURIComponent(msg), "_blank");
 }
