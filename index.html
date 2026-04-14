@@ -9,50 +9,36 @@
 body{
 margin:0;
 font-family:system-ui;
+background:#0f172a;
 color:white;
 display:flex;
 justify-content:center;
 padding:20px;
-background:linear-gradient(-45deg,#0a0a0a,#1a0b2e,#000000,#2d0b45);
-background-size:400% 400%;
-animation:bgMove 12s ease infinite;
-}
-
-@keyframes bgMove{
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
 }
 
 .app{
 max-width:420px;width:100%;
-background:rgba(255,255,255,0.06);
-backdrop-filter:blur(25px);
-padding:22px;
-border-radius:22px;
+background:#1e293b;
+padding:20px;
+border-radius:16px;
 }
 
 .brand{
-display:flex;
-align-items:center;
-gap:10px;
-padding:12px;
-border-radius:12px;
 background:#c084fc;
 color:#1e1b4b;
-font-size:20px;
-font-weight:600;
+padding:10px;
+border-radius:10px;
+font-weight:bold;
+text-align:center;
 }
-
-.subtitle{margin:10px 0 18px;}
 
 input,select{
 width:100%;
 padding:12px;
 margin:8px 0;
-border-radius:10px;
 border:none;
-background:rgba(255,255,255,0.1);
+border-radius:8px;
+background:#334155;
 color:white;
 }
 
@@ -60,9 +46,9 @@ button{
 width:100%;
 padding:14px;
 border:none;
-border-radius:30px;
-font-weight:bold;
+border-radius:25px;
 margin-top:10px;
+font-weight:bold;
 }
 
 .main-btn{background:#f97316;color:black;}
@@ -70,14 +56,13 @@ margin-top:10px;
 
 .result{display:none;margin-top:15px;}
 .card{
-background:rgba(255,255,255,0.1);
-padding:12px;
-border-radius:10px;
-margin-top:10px;
+background:#334155;
+padding:10px;
+border-radius:8px;
+margin-top:8px;
 }
 
 .error{color:#f87171;display:none;}
-.loader{display:none;margin-top:10px;}
 </style>
 </head>
 
@@ -86,14 +71,13 @@ margin-top:10px;
 <div class="app">
 
 <div class="brand">🌿 VitalMetrics Pro</div>
-<p class="subtitle">Based on real health formulas</p>
 
 <input id="age" type="number" placeholder="Age">
 <input id="height" type="number" placeholder="Height (cm)">
 <input id="weight" type="number" placeholder="Weight (kg)">
 <input id="waist" type="number" placeholder="Waist (cm)">
 <input id="neck" type="number" placeholder="Neck (cm)">
-<input id="hip" type="number" placeholder="Hip (female only)">
+<input id="hip" type="number" placeholder="Hip (for female)">
 <input id="sleep" type="number" placeholder="Sleep hours">
 
 <select id="gender">
@@ -102,7 +86,7 @@ margin-top:10px;
 </select>
 
 <select id="activity">
-<option value="1.2">Low activity</option>
+<option value="1.2">Low</option>
 <option value="1.375">Light</option>
 <option value="1.55">Moderate</option>
 </select>
@@ -110,23 +94,22 @@ margin-top:10px;
 <select id="goal">
 <option value="loss">Fat Loss</option>
 <option value="maintain">Maintain</option>
-<option value="gain">Muscle Gain</option>
+<option value="gain">Gain</option>
 </select>
 
-<button class="main-btn" onclick="analyze()">🚀 Analyze My Health</button>
-<div class="error" id="errorMsg">Please fill all required fields</div>
+<button class="main-btn" onclick="analyze()">Analyze</button>
 
-<div class="loader" id="loader">Analyzing...</div>
+<div class="error" id="errorMsg">Fill all required fields</div>
 
 <div class="result" id="result">
-<div class="card" id="scoreBox"></div>
-<div class="card" id="bmiBox"></div>
-<div class="card" id="fatBox"></div>
-<div class="card" id="calBox"></div>
-<div class="card" id="macroBox"></div>
-<div class="card" id="insightBox"></div>
+<div class="card" id="score"></div>
+<div class="card" id="bmi"></div>
+<div class="card" id="fat"></div>
+<div class="card" id="cal"></div>
+<div class="card" id="macro"></div>
+<div class="card" id="insight"></div>
 
-<button class="cta-btn" onclick="unlock()">🔥 Get My Custom Plan (₹199)</button>
+<button class="cta-btn" onclick="unlock()">Get Plan ₹199</button>
 </div>
 
 </div>
@@ -134,78 +117,84 @@ margin-top:10px;
 <script>
 function analyze(){
 
+// GET VALUES
 let age = document.getElementById("age").value;
-let h = document.getElementById("height").value;
-let w = document.getElementById("weight").value;
+let height = document.getElementById("height").value;
+let weight = document.getElementById("weight").value;
 let waist = document.getElementById("waist").value;
 let neck = document.getElementById("neck").value;
 let sleep = document.getElementById("sleep").value;
 
-if(!age||!h||!w||!waist||!neck||!sleep){
+if(!age || !height || !weight || !waist || !neck || !sleep){
 document.getElementById("errorMsg").style.display="block";
 return;
 }
 
 document.getElementById("errorMsg").style.display="none";
-document.getElementById("loader").style.display="block";
-document.getElementById("result").style.display="none";
 
-setTimeout(()=>{
+// CONVERT
+age = Number(age);
+height = Number(height);
+weight = Number(weight);
+waist = Number(waist);
+neck = Number(neck);
+sleep = Number(sleep);
 
+let hip = Number(document.getElementById("hip").value) || 0;
 let gender = document.getElementById("gender").value;
-let act = document.getElementById("activity").value;
+let activity = Number(document.getElementById("activity").value);
 let goal = document.getElementById("goal").value;
-let hip = document.getElementById("hip").value || 0;
-
-age=+age; h=+h; w=+w; waist=+waist; neck=+neck; sleep=+sleep; hip=+hip; act=+act;
 
 // BMR
-let bmr = gender==="male"
-? (10*w)+(6.25*h)-(5*age)+5
-: (10*w)+(6.25*h)-(5*age)-161;
+let bmr;
+if(gender==="male"){
+bmr = (10*weight)+(6.25*height)-(5*age)+5;
+}else{
+bmr = (10*weight)+(6.25*height)-(5*age)-161;
+}
 
 // TDEE
-let tdee=Math.round(bmr*act);
-if(goal==="loss") tdee-=400;
-if(goal==="gain") tdee+=300;
+let calories = Math.round(bmr * activity);
+if(goal==="loss") calories -= 400;
+if(goal==="gain") calories += 300;
 
 // BMI
-let bmi=(w/((h/100)*(h/100))).toFixed(1);
+let bmi = (weight / ((height/100)*(height/100))).toFixed(1);
 
-// Body fat
-let bf=0;
+// BODY FAT
+let bodyFat;
 if(gender==="male"){
-bf = 86.010*Math.log10(waist-neck)-70.041*Math.log10(h)+36.76;
+bodyFat = 86.010*Math.log10(waist-neck)-70.041*Math.log10(height)+36.76;
 }else{
-bf = 163.205*Math.log10(waist+hip-neck)-97.684*Math.log10(h)-78.387;
+bodyFat = 163.205*Math.log10(waist+hip-neck)-97.684*Math.log10(height)-78.387;
 }
-bf=bf.toFixed(1);
+bodyFat = bodyFat.toFixed(1);
 
-// Macros
-let protein=Math.round(w*1.8);
-let fats=Math.round((tdee*0.25)/9);
-let carbs=Math.round((tdee-(protein*4+fats*9))/4);
+// MACROS
+let protein = Math.round(weight * 1.8);
+let fats = Math.round((calories * 0.25)/9);
+let carbs = Math.round((calories - (protein*4 + fats*9))/4);
 
-// Score
-let score=100;
-if(bmi>25) score-=15;
-if(sleep<6) score-=10;
-score=Math.max(50,score);
+// SCORE
+let score = 100;
+if(bmi>25) score -= 15;
+if(bmi>30) score -= 25;
+if(sleep<6) score -= 10;
+if(activity<1.3) score -= 10;
+score = Math.max(50, score);
 
-// Output
-document.getElementById("scoreBox").innerHTML="🔥 Health Score: "+score+"/100";
-document.getElementById("bmiBox").innerHTML="📊 BMI: "+bmi;
-document.getElementById("fatBox").innerHTML="💪 Body Fat: "+bf+"%";
-document.getElementById("calBox").innerHTML="🍽 Calories: "+tdee+" kcal";
-document.getElementById("macroBox").innerHTML="🥗 Protein:"+protein+"g | Carbs:"+carbs+"g | Fats:"+fats+"g";
-document.getElementById("insightBox").innerHTML="⚡ Improve sleep & maintain calorie balance.";
+// OUTPUT
+document.getElementById("score").innerText = "Health Score: " + score + "/100";
+document.getElementById("bmi").innerText = "BMI: " + bmi;
+document.getElementById("fat").innerText = "Body Fat: " + bodyFat + "%";
+document.getElementById("cal").innerText = "Calories: " + calories + " kcal";
+document.getElementById("macro").innerText = "Protein: "+protein+"g | Carbs: "+carbs+"g | Fats: "+fats+"g";
+document.getElementById("insight").innerText = "Maintain calorie balance & improve sleep.";
 
-document.getElementById("loader").style.display="none";
 document.getElementById("result").style.display="block";
-
-},1000);
 }
 
+// WHATSAPP
 function unlock(){
 window.open("https://wa.me/91XXXXXXXXXX?text=Hi, I want my personalized plan");
 }
