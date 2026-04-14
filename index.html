@@ -43,6 +43,7 @@ border-radius:30px;
 background:#00c6ff;
 color:black;
 font-weight:bold;
+cursor:pointer;
 }
 
 .result{
@@ -55,6 +56,17 @@ background:rgba(255,255,255,0.1);
 padding:15px;
 border-radius:12px;
 margin-top:10px;
+}
+
+.cta{
+margin-top:15px;
+display:none;
+}
+
+.trust{
+margin-top:15px;
+font-size:13px;
+opacity:0.85;
 }
 </style>
 </head>
@@ -98,6 +110,17 @@ margin-top:10px;
 <div class="card" id="calBox"></div>
 <div class="card" id="insightBox"></div>
 
+<div class="cta" id="ctaBox">
+<button onclick="unlock()">🔓 Get My Personalized Plan</button>
+
+<div class="trust">
+✔ Custom fat loss / muscle plan<br>
+✔ Calories + macros included<br>
+✔ Delivered within 24 hours<br>
+✔ Early users getting results
+</div>
+</div>
+
 </div>
 
 </div>
@@ -135,14 +158,13 @@ else if(bmi<25) cat="Normal";
 else if(bmi<30) cat="Overweight";
 else cat="Obese";
 
-// Score logic
+// Score
 let score = 100 - (bmi*1.5);
 if(sleep<6) score -=5;
 score=Math.max(50,Math.min(95,Math.round(score)));
 
 // Insights
 let insight="";
-
 if(cat==="Overweight" || cat==="Obese"){
 insight+="Your BMI suggests elevated metabolic risk. ";
 }
@@ -155,18 +177,26 @@ insight+="A calorie deficit is applied to support fat loss. ";
 if(gender==="female"){
 insight+="Female metabolism may respond differently to calorie restriction. ";
 }
-
 if(insight===""){
 insight="Your metrics fall within a generally healthy range.";
 }
 
 // Render
 document.getElementById("scoreBox").innerHTML="<b>Health Score:</b> "+score+"/100";
-document.getElementById("bmiBox").innerHTML="<b>BMI:</b> "+bmi+" ("+cat+")<br>Indicates body composition level.";
-document.getElementById("calBox").innerHTML="<b>Daily Calories:</b> "+tdee+" kcal<br>Based on your lifestyle & goal.";
+document.getElementById("bmiBox").innerHTML="<b>BMI:</b> "+bmi+" ("+cat+")";
+document.getElementById("calBox").innerHTML="<b>Daily Calories:</b> "+tdee+" kcal";
 document.getElementById("insightBox").innerHTML="<b>Insights:</b> "+insight;
 
 document.getElementById("result").style.display="block";
+document.getElementById("ctaBox").style.display="block";
+}
+
+// WhatsApp CTA
+function unlock(){
+let msg = "Hi, I want my personalized health report from VitalMetrics Pro.";
+let phone = "918851096893"; // 👉 PUT YOUR NUMBER
+
+window.open("https://wa.me/" + phone + "?text=" + encodeURIComponent(msg), "_blank");
 }
 </script>
 
