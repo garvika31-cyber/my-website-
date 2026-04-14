@@ -34,7 +34,7 @@ box-shadow:0 12px 40px rgba(0,0,0,0.7);
 border:1px solid rgba(255,255,255,0.08);
 }
 
-/* 🔥 BRAND HEADER */
+/* ✅ UPDATED HEADER */
 .brand{
 display:flex;
 align-items:center;
@@ -42,14 +42,21 @@ gap:10px;
 padding:12px 16px;
 border-radius:14px;
 margin-bottom:10px;
-background:linear-gradient(90deg,#a855f7,#f97316);
-box-shadow:0 0 20px rgba(168,85,247,0.6);
+
+background:#c084fc;
+box-shadow:0 0 15px rgba(192,132,252,0.6);
+
 font-size:20px;
 font-weight:600;
+color:#1e1b4b;
 }
 
 .logo{
 font-size:22px;
+}
+
+.name{
+color:#1e1b4b;
 }
 
 .name b{
@@ -318,7 +325,7 @@ document.getElementById("ctaBox").style.display="block";
 
 function unlock(){
 let msg="Hi, I want my personalized health report from VitalMetrics Pro.";
-let phone="918285583429"; // replace with your number
+let phone="918285583429";
 window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg));
 }
 </script>
