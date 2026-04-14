@@ -13,7 +13,7 @@ color:white;
 display:flex;
 justify-content:center;
 padding:20px;
-background:linear-gradient(-45deg,#1e293b,#334155,#0f172a,#0284c7);
+background:linear-gradient(-45deg,#0a0a0a,#1a0b2e,#000000,#2d0b45);
 background-size:400% 400%;
 animation:bgMove 12s ease infinite;
 }
@@ -26,11 +26,12 @@ animation:bgMove 12s ease infinite;
 
 .app{
 max-width:420px;width:100%;
-background:rgba(255,255,255,0.08);
+background:rgba(255,255,255,0.06);
 backdrop-filter:blur(25px);
 padding:22px;
 border-radius:22px;
-box-shadow:0 12px 40px rgba(0,0,0,0.6);
+box-shadow:0 12px 40px rgba(0,0,0,0.7);
+border:1px solid rgba(255,255,255,0.08);
 }
 
 h2{
@@ -42,6 +43,7 @@ font-size:24px;
 font-size:16px;
 opacity:0.8;
 margin-bottom:18px;
+color:#e2e8f0;
 }
 
 input,select{
@@ -50,7 +52,7 @@ padding:14px;
 margin:8px 0 14px;
 border:none;
 border-radius:12px;
-background:rgba(255,255,255,0.12);
+background:rgba(255,255,255,0.1);
 color:white;
 font-size:16px;
 }
@@ -66,27 +68,30 @@ cursor:pointer;
 transition:0.3s;
 }
 
+/* ORANGE = ACTION */
 .main-btn{
-background:linear-gradient(90deg,#22c55e,#4ade80);
-color:#022c22;
-box-shadow:0 0 18px #22c55e;
+background:linear-gradient(90deg,#f97316,#fb923c);
+color:black;
+box-shadow:0 0 18px #f97316;
 }
 
+/* PURPLE = PREMIUM CTA */
 .cta-btn{
-background:linear-gradient(90deg,#0ea5e9,#38bdf8);
-color:#022c22;
-box-shadow:0 0 18px #0ea5e9;
+background:linear-gradient(90deg,#a855f7,#c084fc);
+color:white;
+box-shadow:0 0 18px #a855f7;
 }
 
 .result{display:none;margin-top:18px;}
 
 .card{
-background:rgba(255,255,255,0.12);
+background:rgba(255,255,255,0.08);
 padding:16px;
 border-radius:14px;
 margin-top:12px;
 font-size:16px;
 line-height:1.6;
+border:1px solid rgba(255,255,255,0.08);
 animation:fade 0.6s ease;
 }
 
@@ -104,7 +109,7 @@ font-size:16px;
 
 .bar{
 height:10px;
-background:#1e293b;
+background:#111;
 border-radius:10px;
 overflow:hidden;
 margin-top:12px;
@@ -113,13 +118,13 @@ margin-top:12px;
 .fill{
 height:100%;
 width:0%;
-background:linear-gradient(90deg,#22c55e,#4ade80);
+background:linear-gradient(90deg,#a855f7,#f97316);
 transition:width 1s;
 }
 
 .score-bar{
 height:12px;
-background:#1e293b;
+background:#111;
 border-radius:10px;
 margin-top:10px;
 overflow:hidden;
@@ -128,7 +133,7 @@ overflow:hidden;
 .score-fill{
 height:100%;
 width:0%;
-background:linear-gradient(90deg,#22c55e,#4ade80);
+background:linear-gradient(90deg,#a855f7,#f97316);
 transition:width 1s;
 }
 
@@ -139,6 +144,7 @@ font-size:14px;
 opacity:0.85;
 margin-top:12px;
 line-height:1.5;
+color:#e5e7eb;
 }
 
 .footer{
@@ -146,6 +152,7 @@ text-align:center;
 font-size:13px;
 opacity:0.6;
 margin-top:18px;
+color:#cbd5f5;
 }
 </style>
 </head>
@@ -272,7 +279,7 @@ document.getElementById("ctaBox").style.display="block";
 
 function unlock(){
 let msg="Hi, I want my personalized health report from VitalMetrics Pro.";
-let phone="918851096893";
+let phone="918285583429";
 window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg));
 }
 </script>
